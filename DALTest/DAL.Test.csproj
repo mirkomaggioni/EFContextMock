@@ -84,7 +84,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NSubstitute\DAL.csproj">
+    <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{7a729b2b-a3a5-45fc-9aee-faac65182126}</Project>
       <Name>DAL</Name>
     </ProjectReference>
