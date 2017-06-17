@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using NUnit.Framework;
-using DAL.DataLayer;
-using NSubstitute;
 using System.Threading.Tasks;
+using DAL.DataLayer;
 using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
 
-namespace NSubstituteTest
+namespace DAL.Test
 {
     [TestFixture]
     public class PersonServiceTest : BaseTest

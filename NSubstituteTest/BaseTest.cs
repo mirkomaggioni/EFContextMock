@@ -4,11 +4,11 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using DAL.BusinessLayer;
 using DAL.DataLayer;
+using DAL.Test.Utils;
 using NSubstitute;
-using NSubstituteTest.Utils;
 using NUnit.Framework;
 
-namespace NSubstituteTest
+namespace DAL.Test
 {
     public class BaseTest
     {
