@@ -13,7 +13,7 @@ namespace DAL.Test
     public class BaseTest
     {
         protected PersonService PersonService;
-        protected IContext DbContext;
+        protected Context DbContext;
 
         [OneTimeSetUp]
         public void Setup()
@@ -32,10 +32,12 @@ namespace DAL.Test
             ((IQueryable<Person>)mockSet).Provider.Returns(new AsyncQueryProvider<Person>(persons.Provider));
             ((IDbAsyncEnumerable<Person>)mockSet).GetAsyncEnumerator().Returns(new AsyncEnumerator<Person>(persons.GetEnumerator()));
 
-            DbContext = Substitute.For<IContext>();
+            DbContext = Substitute.For<Context>();
             DbContext.Persons.Returns(mockSet);
 
-            PersonService = new PersonService(DbContext);
+			var contextFactory = new ContextFactory();
+			contextFactory.Register(DbContext);
+            PersonService = new PersonService(contextFactory);
         }
 
         [OneTimeTearDown]

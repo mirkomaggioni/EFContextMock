@@ -8,36 +8,48 @@ namespace DAL.BusinessLayer
 {
     public class PersonService
     {
-        private readonly IContext _context;
+        private readonly ContextFactory _contextFactory;
 
-        public PersonService(IContext context)
+        public PersonService(ContextFactory contextFactory)
         {
-            _context = context;
+	        _contextFactory = contextFactory;
         }
 
         public async Task<List<Person>> GetPersons(string query)
         {
-            return await _context.Persons.Where(p => p.TaxCode.Contains(query) || p.Firstname.Contains(query) || p.Surname.Contains(query)).ToListAsync();
-        }
+	        using (var db = _contextFactory.Get<Context>())
+	        {
+		        return await db.Persons.Where(p => p.TaxCode.Contains(query) || p.Firstname.Contains(query) || p.Surname.Contains(query)).ToListAsync();
+			}
+		}
 
         public async Task AddPerson(Person person)
         {
-            _context.Persons.Add(person);
-            await _context.SaveChangesAsync();
+	        using (var db = _contextFactory.Get<Context>())
+	        {
+				db.Persons.Add(person);
+		        await db.SaveChangesAsync();
+	        }
         }
 
         public async Task UpdatePerson(Person person)
         {
-            _context.Attach(person);
-            _context.SetModified(person);
-            await _context.SaveChangesAsync();
+	        using (var db = _contextFactory.Get<Context>())
+	        {
+		        var entity = await db.Persons.FindAsync(person.TaxCode);
+		        entity.Firstname = person.Firstname;
+		        entity.Surname = person.Surname;
+		        await db.SaveChangesAsync();
+			}
         }
 
         public async Task DeletePerson(Person person)
         {
-            _context.Attach(person);
-            _context.Persons.Remove(person);
-            await _context.SaveChangesAsync();
+	        using (var db = _contextFactory.Get<Context>())
+	        {
+		        db.Persons.Remove(person);
+		        await db.SaveChangesAsync();
+	        }
         }
     }
 }

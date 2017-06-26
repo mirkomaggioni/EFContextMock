@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLayer\PersonService.cs" />
+    <Compile Include="ContextFactory.cs" />
     <Compile Include="DataLayer\Context.cs" />
     <Compile Include="DataLayer\Person.cs" />
     <Compile Include="Migrations\201608100524040_AddingPersonTable.cs" />
