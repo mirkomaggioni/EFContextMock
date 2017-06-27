@@ -13,7 +13,7 @@ namespace DAL.DataLayer
 
     public class Context : DbContext, IContext
     {
-        public DbSet<Person> Persons { get; set; }
+        public virtual DbSet<Person> Persons { get; set; }
         public void Attach<T>(T entity) where T : class 
         {
             if (Entry(entity).State == EntityState.Detached)

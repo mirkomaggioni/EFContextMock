@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DAL.DataLayer;
 using FluentAssertions;
-using NSubstitute;
+using Moq;
 using NUnit.Framework;
 
 namespace DAL.Test
@@ -10,68 +13,60 @@ namespace DAL.Test
     [TestFixture]
     public class PersonServiceTest : BaseTest
     {
-        [Test]
-        public async Task Find_at_least_one_person()
-        {
-            var persons = await PersonService.GetPersons("taxcode1");
+	    [Test]
+	    public async Task Find_at_least_one_person()
+	    {
+			var persons = await PersonService.GetPersons("taxcode1");
 
-            persons.Should().NotBeNullOrEmpty();
-            persons.Count().ShouldBeEquivalentTo(1);
-        }
+		    persons.Should().NotBeNullOrEmpty();
+		    persons.Count().ShouldBeEquivalentTo(1);
+		}
 
-        [Test]
-        public async Task New_person_is_saved()
-        {
-            var person = new Person()
-            {
-                TaxCode = "taxcode3",
-                Firstname = "firstname3",
-                Surname = "surname3"
-            };
+		[Test]
+		public async Task New_person_is_saved()
+		{
+			var person = new Person()
+			{
+				TaxCode = "taxcode3",
+				Firstname = "firstname3",
+				Surname = "surname3"
+			};
 
-            await PersonService.AddPerson(person);
+			await PersonService.AddPerson(person);
 
-            DbContext.Persons.Received().Add(person);
-            await DbContext.Received().SaveChangesAsync();
-        }
+			MockSet.Verify(m => m.Add(person), Times.Once);
+			MockContext.Verify(m => m.SaveChangesAsync(), Times.Once);
+		}
 
-        [Test]
-        public async Task Modified_person_is_saved()
-        {
-            var person = new Person()
-            {
-                TaxCode = "taxcode1",
-                Firstname = "firstname1",
-                Surname = "surname1 changed"
-            };
+		[Test]
+		public async Task Modified_person_is_saved()
+		{
+			var person = new Person()
+			{
+				TaxCode = "taxcode1",
+				Firstname = "firstname1",
+				Surname = "surname1 changed"
+			};
 
-            DbContext.When(c => c.Attach(person)).DoNotCallBase();
-            DbContext.When(c => c.SetModified(person)).DoNotCallBase();
+			await PersonService.UpdatePerson(person);
 
-            await PersonService.UpdatePerson(person);
+			MockContext.Verify(m => m.SaveChangesAsync(), Times.Once);
+		}
 
-            DbContext.Received().Attach(person);
-            DbContext.Received().SetModified(person);
-            await DbContext.Received().SaveChangesAsync();
-        }
+		[Test]
+		public async Task Person_is_deleted()
+		{
+			var person = new Person()
+			{
+				TaxCode = "taxcode1",
+				Firstname = "firstname1",
+				Surname = "surname1"
+			};
 
-        [Test]
-        public async Task Person_is_deleted()
-        {
-            var person = new Person()
-            {
-                TaxCode = "taxcode1",
-                Firstname = "firstname1",
-                Surname = "surname1"
-            };
+			await PersonService.DeletePerson(person);
 
-            DbContext.When(c => c.Attach(person)).DoNotCallBase();
-
-            await PersonService.DeletePerson(person);
-
-            DbContext.Received().Attach(person);
-            DbContext.Persons.Received().Remove(person);
-            await DbContext.Received().SaveChangesAsync();
-        }
-    }
+			MockSet.Verify(m => m.Remove(person), Times.Once);
+			MockContext.Verify(m => m.SaveChangesAsync(), Times.Once);
+		}
+	}
 }

@@ -36,10 +36,13 @@ namespace DAL.BusinessLayer
         {
 	        using (var db = _contextFactory.Get<Context>())
 	        {
-		        var entity = await db.Persons.FindAsync(person.TaxCode);
-		        entity.Firstname = person.Firstname;
-		        entity.Surname = person.Surname;
-		        await db.SaveChangesAsync();
+		        var entity = await db.Persons.FirstOrDefaultAsync(p => p.TaxCode == person.TaxCode);
+		        if (entity != null)
+		        {
+			        entity.Firstname = person.Firstname;
+			        entity.Surname = person.Surname;
+			        await db.SaveChangesAsync();
+		        }
 			}
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using DAL.BusinessLayer;
 using DAL.DataLayer;
 using DAL.Test.Utils;
-using NSubstitute;
+using Moq;
 using NUnit.Framework;
 
 namespace DAL.Test
@@ -13,9 +13,10 @@ namespace DAL.Test
     public class BaseTest
     {
         protected PersonService PersonService;
-        protected Context DbContext;
+	    protected Mock<Context> MockContext;
+	    protected Mock<DbSet<Person>> MockSet;
 
-        [OneTimeSetUp]
+	    [OneTimeSetUp]
         public void Setup()
         {
             var persons = new List<Person>() {
@@ -23,20 +24,22 @@ namespace DAL.Test
                 new Person() { TaxCode = "taxcode2", Firstname = "firstname2", Surname = "surname2" }
             }.AsQueryable();
 
-            var mockSet = Substitute.For<DbSet<Person>, IQueryable<Person>, IDbAsyncEnumerable<Person>>();
+            MockSet = new Mock<DbSet<Person>>();
 
-            ((IQueryable<Person>)mockSet).Expression.Returns(persons.Expression);
-            ((IQueryable<Person>)mockSet).ElementType.Returns(persons.ElementType);
-            ((IQueryable<Person>)mockSet).GetEnumerator().Returns(persons.GetEnumerator());
+	        MockSet.As<IQueryable<Person>>().Setup(m => m.Expression).Returns(persons.Expression);
+	        MockSet.As<IQueryable<Person>>().Setup(m => m.ElementType).Returns(persons.ElementType);
+	        MockSet.As<IQueryable<Person>>().Setup(m => m.GetEnumerator()).Returns(persons.GetEnumerator);
 
-            ((IQueryable<Person>)mockSet).Provider.Returns(new AsyncQueryProvider<Person>(persons.Provider));
-            ((IDbAsyncEnumerable<Person>)mockSet).GetAsyncEnumerator().Returns(new AsyncEnumerator<Person>(persons.GetEnumerator()));
+	        MockSet.As<IQueryable<Person>>().Setup(m => m.Provider)
+		        .Returns(new AsyncQueryProvider<Person>(persons.Provider));
+	        MockSet.As<IDbAsyncEnumerable<Person>>().Setup(m => m.GetAsyncEnumerator())
+		        .Returns(new AsyncEnumerator<Person>(persons.GetEnumerator()));
 
-            DbContext = Substitute.For<Context>();
-            DbContext.Persons.Returns(mockSet);
+            MockContext = new Mock<Context>();
+	        MockContext.Setup(m => m.Persons).Returns(MockSet.Object);
 
 			var contextFactory = new ContextFactory();
-			contextFactory.Register(DbContext);
+			contextFactory.Register(MockContext.Object);
             PersonService = new PersonService(contextFactory);
         }
 
