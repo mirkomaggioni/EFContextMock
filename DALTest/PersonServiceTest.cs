@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DAL.DataLayer;
 using FluentAssertions;
@@ -35,6 +33,7 @@ namespace DAL.Test
 			await PersonService.AddPerson(person);
 
 			MockSet.Verify(m => m.Add(person), Times.Once);
+			MockContext.Object.Persons.Count().ShouldBeEquivalentTo(3);
 			MockContext.Verify(m => m.SaveChangesAsync(), Times.Once);
 		}
 
@@ -56,17 +55,30 @@ namespace DAL.Test
 		[Test]
 		public async Task Person_is_deleted()
 		{
-			var person = new Person()
-			{
-				TaxCode = "taxcode1",
-				Firstname = "firstname1",
-				Surname = "surname1"
-			};
+			var person = MockContext.Object.Persons.First(p => p.TaxCode == "taxcode1");
 
 			await PersonService.DeletePerson(person);
 
 			MockSet.Verify(m => m.Remove(person), Times.Once);
+			MockContext.Object.Persons.Count().ShouldBeEquivalentTo(1);
 			MockContext.Verify(m => m.SaveChangesAsync(), Times.Once);
+		}
+
+	    [Test]
+	    public async Task deletion_for_unexisting_person_throw_exception()
+	    {
+		    try
+		    {
+			    var person = MockContext.Object.Persons.First(p => p.TaxCode == "taxcode3");
+
+			    await PersonService.DeletePerson(person);
+
+				true.ShouldBeEquivalentTo(false);
+			}
+		    catch (Exception e)
+		    {
+			    e.Should().BeOfType<InvalidOperationException>();
+		    }
 		}
 	}
 }
