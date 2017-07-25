@@ -27,7 +27,7 @@ function SetAssemblyInfo([string]$sourceDirectory, [string]$version) {
     }
 }
 
-$msbuild = "C:\Program Files (x86)\MSBuild\14.0\bin\amd64\msbuild.exe"
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
 $solutionFolder = $PSScriptRoot + "..\..\"
 $solutionFile = $solutionFolder + "\EFContextMock.sln"
 $projectFile = $solutionFolder + "\DALTest\DAL.Test.csproj"
