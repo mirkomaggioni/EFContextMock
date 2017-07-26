@@ -27,13 +27,13 @@ function SetAssemblyInfo([string]$sourceDirectory, [string]$version) {
     }
 }
 
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\msbuild.exe"
 $solutionFolder = $PSScriptRoot + "..\..\"
 $solutionFile = $solutionFolder + "\EFContextMock.sln"
-$projectFile = $solutionFolder + "\DALTest\DAL.Test.csproj"
+$projectFile = $solutionFolder + "\WebApp\WebApp.csproj"
 $nuget = $solutionFolder + "\nuget\nuget.exe"
-$options = "/p:Configuration=Release"
 $version = $(git describe --abbrev=0 --tag)
+$publishUrl = "c:\temp\EFContextMock\" + $version
 
 SetAssemblyInfo $solutionFolder $version
 
@@ -52,7 +52,7 @@ else{
 
 Write-Host "Building"
 
-& $msbuild $projectFile $options
+& $msbuild $projectFile /p:DeployOnBuild=true /p:PublishProfile=Publish.pubxml /p:PublishUrl=$publishUrl
 
 if ($LastExitCode -ne 0){
     $exitCode=$LastExitCode
