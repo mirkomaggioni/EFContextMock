@@ -2,10 +2,12 @@
 function SetAssemblyInfo([string]$sourceDirectory, [string]$version) {
 
     Write-Host "Appling version" $version
-    $versionRegex = "\d+.\d+.\d+"
-    $versionData = [regex]::matches($version,$versionRegex)
+    $versionRegex1 = "\d+.\d+.\d+"
+    $versionData1 = [regex]::matches($version,$versionRegex1)
+    $versionRegex2 = "\d+.\d+"
+    $versionData2 = [regex]::matches($version,$versionRegex2)
 
-    if ($versionData.Count -eq 0) { Throw "Version " + $version + " has a bad format" }
+    if ($versionData1.Count -eq 0 -and $versionData2.Count -eq 0) { Throw "Version " + $version + " has a bad format" }
     
     $files = Get-ChildItem $sourceDirectory -recurse -include "*Properties*" | 
                 ?{ $_.PSIsContainer } | 
