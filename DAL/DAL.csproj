@@ -44,7 +44,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ILoggerService.cs" />
+    <Compile Include="BusinessLayer\LoggerService.cs" />
     <Compile Include="BusinessLayer\PersonService.cs" />
     <Compile Include="ContextFactory.cs" />
     <Compile Include="DataLayer\Context.cs" />
@@ -60,6 +67,10 @@
     <Compile Include="Migrations\201608100524040_AddingPersonTable.cs" />
     <Compile Include="Migrations\201608100524040_AddingPersonTable.Designer.cs">
       <DependentUpon>201608100524040_AddingPersonTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809211635148_AddingLogTable.cs" />
+    <Compile Include="Migrations\201809211635148_AddingLogTable.Designer.cs">
+      <DependentUpon>201809211635148_AddingLogTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +82,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608100524040_AddingPersonTable.resx">
       <DependentUpon>201608100524040_AddingPersonTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809211635148_AddingLogTable.resx">
+      <DependentUpon>201809211635148_AddingLogTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
