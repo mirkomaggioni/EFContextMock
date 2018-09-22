@@ -9,6 +9,10 @@ namespace DAL.BusinessLayer
 
 		public LoggerService(string filepath)
 		{
+			var directorypath = filepath.Substring(0, filepath.LastIndexOf(@"\"));
+			if (!Directory.Exists(directorypath))
+				Directory.CreateDirectory(directorypath);
+
 			_filePath = filepath;
 		}
 
