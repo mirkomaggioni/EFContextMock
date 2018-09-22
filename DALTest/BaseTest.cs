@@ -40,7 +40,7 @@ namespace DAL.Test
             MockContext = new Mock<Context>();
 	        MockContext.Setup(m => m.Persons).Returns(MockSet.Object);
 
-			var contextFactory = new ContextFactory(new LoggerService(@"c:\temp\log.txt"));
+			var contextFactory = new ContextFactory();
 			contextFactory.Register(MockContext.Object);
             PersonService = new PersonService(contextFactory);
         }

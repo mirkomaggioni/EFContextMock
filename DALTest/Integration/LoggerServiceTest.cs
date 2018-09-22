@@ -14,13 +14,13 @@ namespace DAL.Test.Integration
 		[SetUp]
 		public void Setup()
 		{
-			_contextFactory = new ContextFactory(new LoggerService(@"c:\temp\log.txt"));
+			_contextFactory = new ContextFactory();
 		}
 
 		[Test]
 		public async Task entity_framework_query_is_loggedAsync()
 		{
-			using (var db = _contextFactory.Get<Context>(true))
+			using (var db = _contextFactory.Get<Context>(true, @"c:\temp\log.txt"))
 			{
 				var person = await db.Persons.FirstOrDefaultAsync();
 				Assert.IsNotNull(person);

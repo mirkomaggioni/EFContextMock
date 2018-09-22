@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
+using DAL.BusinessLayer;
 using DAL.Interfaces;
 
 namespace DAL
@@ -8,12 +9,7 @@ namespace DAL
 	{
 		private Type _dbContextType;
 		private DbContext _dbContext;
-		private readonly ILoggerService _loggerService;
-
-		public ContextFactory(ILoggerService loggerService)
-		{
-			_loggerService = loggerService;
-		}
+		private ILoggerService _loggerService;
 
 		public void Register<TDbContext>(TDbContext dbContext) where TDbContext : DbContext, new()
 		{
@@ -21,8 +17,14 @@ namespace DAL
 			_dbContext = dbContext;
 		}
 
-		public TDbContext Get<TDbContext>(bool log = false) where TDbContext : DbContext, new()
+		public TDbContext Get<TDbContext>(bool log = false, string filepath = "") where TDbContext : DbContext, new()
 		{
+			if (log && string.IsNullOrEmpty(filepath))
+				throw new ArgumentNullException(nameof(filepath));
+
+			if (log && _loggerService == null)
+				_loggerService = new LoggerService(filepath);
+
 			if (_dbContext == null || _dbContextType != typeof(TDbContext))
 			{
 				var db = new TDbContext();
