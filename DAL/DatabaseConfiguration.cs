@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using DAL.Interceptors;
 
 namespace DAL
 {
@@ -7,6 +8,7 @@ namespace DAL
 		public DatabaseConfiguration()
 		{
 			SetDatabaseLogFormatter((context, writeAction) => new LogFormatter(context, writeAction));
+			AddInterceptor(new CommandInterceptor());
 		}
 	}
 }

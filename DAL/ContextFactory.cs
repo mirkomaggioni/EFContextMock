@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using DAL.BusinessLayer;
+using DAL.DataLayer;
 using DAL.Interfaces;
 
 namespace DAL
@@ -17,7 +18,7 @@ namespace DAL
 			_dbContext = dbContext;
 		}
 
-		public TDbContext Get<TDbContext>(bool log = false, string filepath = "") where TDbContext : DbContext, new()
+		public TDbContext Get<TDbContext>(bool log = false, string filepath = "") where TDbContext : DbContext, IContext, new()
 		{
 			if (log && string.IsNullOrEmpty(filepath))
 				throw new ArgumentNullException(nameof(filepath));
@@ -29,7 +30,10 @@ namespace DAL
 			{
 				var db = new TDbContext();
 				if (log)
-					db.Database.Log = (string message) => _loggerService.Debug(message);
+				{
+					db.LogEnabled = true;
+					db.LogPath = filepath;
+				}
 
 				return db;
 			}

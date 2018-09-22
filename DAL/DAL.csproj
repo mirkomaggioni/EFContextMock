@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interceptors\CommandInterceptor.cs" />
     <Compile Include="DatabaseConfiguration.cs" />
     <Compile Include="LogFormatter.cs" />
     <Compile Include="Interfaces\ILoggerService.cs" />
