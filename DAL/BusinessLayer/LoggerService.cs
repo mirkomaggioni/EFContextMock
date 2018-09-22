@@ -18,10 +18,12 @@ namespace DAL.BusinessLayer
 
 		public void Debug(string message)
 		{
+#if DEBUG
 			using (var streamWriter = new StreamWriter(_filePath, true))
 			{
 				streamWriter.WriteLine(message);
 			}
+#endif
 		}
 	}
 }
