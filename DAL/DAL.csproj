@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseConfiguration.cs" />
+    <Compile Include="LogFormatter.cs" />
     <Compile Include="Interfaces\ILoggerService.cs" />
     <Compile Include="BusinessLayer\LoggerService.cs" />
     <Compile Include="BusinessLayer\PersonService.cs" />
