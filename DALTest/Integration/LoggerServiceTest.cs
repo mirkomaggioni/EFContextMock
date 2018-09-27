@@ -20,7 +20,7 @@ namespace DAL.Test.Integration
 		[Test]
 		public async Task entity_framework_query_is_loggedAsync()
 		{
-			using (var db = _contextFactory.Get<Context>(true, @"c:\temp\log.txt"))
+			using (var db = _contextFactory.Get<Context>(new LoggerService(@"c:\temp\log.txt")))
 			{
 				var person = await db.Persons.FirstOrDefaultAsync();
 				Assert.IsNotNull(person);
